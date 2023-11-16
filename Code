@@ -1,0 +1,126 @@
+[1:07 PM, 11/16/2023] Kitty Kat🐈‍⬛: import socket
+import argparse
+import threading
+from queue import Queue
+from time import time
+# Define common ports to scan for in a dictionary
+common_ports = {
+'21': 'FTP',
+'22': 'SSH',
+'23': 'Telnet',
+'25': 'SMTP',
+'53': 'DNS',
+'69': 'TFTP',
+'80': 'HTTP',
+109': 'POP2',
+'110': 'POP3',
+'123': 'NTP',
+'137': 'NetBIOS',
+'138': 'NetBIOS',
+'139': 'NetBIOS',
+'143': 'IMAP',
+'161': 'SNMP',
+'194': 'IRC',
+'389': 'LDAP',
+'443': 'HTTPS',
+'445': 'SMB',
+'465': 'SMTPS',
+'514': 'Syslog',
+'515': 'LPD/LPR',
+¹389': 'LDAP',
+'443': 'HTTPS',
+'445': 'SMB',
+'465': 'SMTPS',
+'514': 'Syslog',
+'515': 'LPD/LPR',
+'587': 'SMTP',
+'902': 'VMware',
+'993': 'IMAPS',
+1995':'POP3S',
+'1433': 'Microsoft SQL Server',
+'1521': 'Oracle Database',
+'3306': 'MySQL',
+'3389': 'Remote Desktop Protocol',
+¹5432': 'PostgreSQL',
+5800': 'VNC HTTP',
+5900': 'VNC',
+'6379': 'Redis',
+'8080': 'HTTP alternate',
+'8443': 'HTTPS alternate',
+'9000': 'Jenkins',
+27017': 'MongoDB',
+}
+def scan_tcp (host, port, results, timeout):
+#Scan the specified TCP port on the target IP address.
+
+s = socket.socket (socket.AF_INET, socket. SOCK_STREAM)
+s.settimeout(timeout)
+try:
+result =s.connect_ex((host, port))
+if result == 0:
+status: 'Closed',
+'banner': ' ',
+}
+except socket.gaierror:
+print (f'Error: Could not resolve hostname {host}')
+except socket.error as e:
+print (f'Error: Could not connect to (host): {port} ({e})')
+finally:
+s.close()
+def scan_udp(host, port, results, timeout):
+
+#Scan the specified UDP port on the target IP address.
+s = socket.socket (socket.AF_INET, socket. SOCK_DGRAM)
+s.settimeout(timeout)
+try:
+s.sendto (b'PING', (host, port))
+data, addr = s.recvfrom (1024)
+service = common_ports.get(str (port), 'Unknown')
+results[port] = {
+'protocol': 'UDP',
+'service': service,
+'status': 'Open',
+'banner': get_banner(s),
+}
+except socket.gaierror:
+print (f'Error: Could not resolve hostname {host}')
+except socket.error as e:
+if 'timed out' in str(e):
+results[port] = {
+'protocol': 'UDP',
+'service
+[1:15 PM, 11/16/2023] Kitty Kat🐈‍⬛: import socket
+
+def scan_port(host, port, timeout):
+    # Scan the specified TCP port on the target IP address
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(timeout)
+    try:
+        result = s.connect_ex((host, port))
+        if result == 0:
+            print(f"Port {port} : open")
+        else:
+            print(f"Port {port} : closed")
+    except socket.gaierror:
+        print(f'Error: Could not resolve hostname {host}')
+    except socket.error as e:
+        print(f'Error: Could not connect to {host}:{port} ({e})')
+    finally:
+        s.close()
+
+def scan_prominent_ports(target_host, timeout):
+    # List of prominent ports to scan
+    prominent_ports = [
+        21, 22, 23, 25, 53, 80, 110, 143, 443, 587, 993, 995, 3389, 5432, 8080
+        # Add more ports as needed
+    ]
+
+    for port in prominent_ports:
+        scan_port(target_host, port, timeout)
+
+if _name_ == "_main_":
+    target_host = input("Enter the target IP address: ")
+    timeout = float(input("Enter the socket timeout in seconds: "))
+
+    print(f"Scanning prominent ports on {target_host}...\n")
+    scan_prominent_ports(target_host, timeout)
