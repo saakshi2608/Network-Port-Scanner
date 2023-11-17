@@ -1,4 +1,4 @@
-[1:07 PM, 11/16/2023] Kitty Kat🐈‍⬛: import socket
+import socket
 import argparse
 import threading
 from queue import Queue
@@ -88,8 +88,7 @@ except socket.error as e:
 if 'timed out' in str(e):
 results[port] = {
 'protocol': 'UDP',
-'service
-[1:15 PM, 11/16/2023] Kitty Kat🐈‍⬛: import socket
+import socket
 
 def scan_port(host, port, timeout):
     # Scan the specified TCP port on the target IP address
